@@ -10,6 +10,23 @@ public class StudentTest {
         // Opprette 1 studentobjekt
         Student s1 = new Student();
 
-        out.println("s1 = " + s1);
+        s1.studNr = 123456;
+        s1.fornavn = "ANFU";
+        s1.etternavn = "ilbyuv";
+        s1.fødtÅr = 1204;
+        s1.kjønn = 'X';
+
+
+        // Opprette 1 studentobjekt med innlest verdi
+        Student s2 = new Student();
+
+        s2.studNr = Min.lesHeltall(0, 999999, "Studentnummer: ");
+        s2.fornavn = showInputDialog("Fornavn: ");
+        s2.etternavn = showInputDialog("Fornavn: ");
+        s2.fødtÅr = Min.lesHeltall(1900, 2022 - 18, "Født: ");
+        s2.kjønn = showInputDialog("Kjønn (M/K): ").charAt(0);
+        
+        
+        
     }
 }
