@@ -26,7 +26,7 @@ public class StudentTest {
         s2.fødtÅr = Min.lesHeltall(1900, 2022 - 18, "Født: ");
         s2.kjønn = showInputDialog("Kjønn (M/K): ").charAt(0);
         
-        
+        out.println(s2.toString());
         
     }
 }
