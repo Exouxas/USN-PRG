@@ -11,7 +11,7 @@ public class Student {
     public int getStudNr(){
         return studNr;
     }
-    public void setStudÅr(int fødtÅr){
+    public void setStudNr(int studNr){
         this.studNr = studNr;
     }
 
