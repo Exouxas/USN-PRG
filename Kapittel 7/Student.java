@@ -95,7 +95,7 @@ public class Student {
             s.setFødtÅr(leser.nextInt());
             s.setKjønn(leser.next().charAt(0));
         }
-        catch(InputMismatchException | NoSuchElementException e){
+        catch(NoSuchElementException e){
             throw new IllegalArgumentException("Feil verdistruktur.");
         }
         catch(Exception e){
