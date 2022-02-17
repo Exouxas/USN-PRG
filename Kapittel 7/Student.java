@@ -80,6 +80,35 @@ public class Student {
         return studNr + ": " + pent(fornavn) + " " + pent(etternavn);
     }
 
+    public String serialize(){
+        return studNr + ";" + fornavn + ";" + etternavn + ";" + fødtÅr + ";" + kjønn;
+    }
+
+    public static Student deserialize(String input) throws IllegalArgumentException{
+        Student s = new Student();
+        Scanner leser = new Scanner(input);
+        leser.useDelimiter(";");
+        try{
+            s.setStudNr(leser.nextInt());
+            s.setFornavn(leser.next());
+            s.setEtternavn(leser.next());
+            s.setFødtÅr(leser.nextInt());
+            s.setKjønn(leser.next().charAt(0));
+        }
+        catch(InputMismatchException | NoSuchElementException e){
+            throw new IllegalArgumentException("Feil verdistruktur.");
+        }
+        catch(Exception e){
+            throw new IllegalArgumentException("Feil inndata.");
+        }
+        finally{
+            leser.close();
+        }
+        
+
+        return s;
+    }
+
     public String navn(){
         return fornavn + " " + etternavn;
     }
