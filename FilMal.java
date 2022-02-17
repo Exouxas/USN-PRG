@@ -10,7 +10,7 @@ public class Mal {
         File fil = new File("tallfil.txt"); // Lag fil-peker
         Scanner leser = new Scanner(fil); // opprett leser
         leser.useLocale(Locale.US); // bruk punktum som separator
-
+        // leser.useDelimitier(";"); // endre skilletegn
         
         leser.hasNext(); // bool
         leser.next(); // String
@@ -24,5 +24,7 @@ public class Mal {
         leser.hasNextDouble(); // bool
         leser.nextDouble(); // double
 
+
+        
     }
 }
