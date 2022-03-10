@@ -20,17 +20,14 @@ public class SendOgMotta {
 
 
             melding = "create table Vare(Nr integer primary key, Name vachar(50));";
-
             stmt.executeUpdate(melding);
 
             melding = "insert into Vare values(1, 'Spade');"
                     + "insert into Vare values(2, 'Hakke');"
                     + "insert into Vare values(3, 'Spett');";
-
             stmt.executeUpdate(melding);
 
             melding = "select Name from Vare where Nr > 1;";
-
             ResultSet result = stmt.executeQuery(melding);
 
             while(result.next()){
