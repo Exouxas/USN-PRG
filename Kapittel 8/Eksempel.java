@@ -28,13 +28,14 @@ public class Eksempel extends Application {
         StackPane root = new StackPane();
         root.getChildren().add(btn);
 
- Scene scene = new Scene(root, 300, 250);
+        Scene scene = new Scene(root, 300, 250);
 
         primaryStage.setTitle("Hello World!");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
- public static void main(String[] args) {
+    
+    public static void main(String[] args) {
         launch(args);
     }
 }
