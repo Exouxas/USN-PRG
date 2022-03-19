@@ -24,18 +24,24 @@ public class Trekkemaskin extends Application {
         FlowPane panel = new FlowPane();
         panel.setHgap(10);
         panel.setVgap(10);
+
         knapp = new Button("Trekk");
         knapp.setOnAction(e -> behandleKlikk(e));
+
         tekstfelt = new TextField();
+
         Label minTekst = new Label("Min: ");
         min = new TextField();
         min.setPrefColumnCount(4);
+
         Label maxTekst = new Label("  Max: ");
         max = new TextField();
         max.setPrefColumnCount(4);
 
         panel.getChildren().addAll(knapp, tekstfelt, minTekst, min, maxTekst, max);
+        
         Scene scene = new Scene(panel, 220, 80);
+
         vindu.setTitle("Trekkemaskin");
         vindu.setScene(scene);
         vindu.show();
@@ -47,7 +53,6 @@ public class Trekkemaskin extends Application {
             int slutt = parseInt(max.getText());
             int tall = Min.trekkTall(start, slutt);
             tekstfelt.setText("" + tall);
-
         } catch (NumberFormatException ex) {
             tekstfelt.setText("Mangler min/max");
         }
