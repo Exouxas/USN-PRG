@@ -32,17 +32,24 @@ import javafx.stage.Stage;
 public class JavaFXMal extends Application { // Extends javafx application window
     
     public void start(Stage window) {
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
 
-        btn.setOnAction(new EventHandler<ActionEvent>() {
+        // One way of subbing to event
+        Button btn1 = new Button();
+        btn1.setText("Say 'Hello World'");
+        btn1.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 System.out.println("Hello World!");
             }
         });
+
+        // Other way of subbing to event
+        Button btn2 = new Button();
+        btn2.setText("Say 'Hello World'");
+        btn2.setOnAction(e -> handleButtonPress(e));
         
+
         StackPane root = new StackPane();
-        root.getChildren().add(btn);
+        root.getChildren().add(btn1, btn2);
 
 
         Scene scene = new Scene(root, 300, 250);
@@ -54,5 +61,9 @@ public class JavaFXMal extends Application { // Extends javafx application windo
     
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public void handleButtonPress(ActionEvent event) {
+        System.out.println("Hello World!");
     }
 }
