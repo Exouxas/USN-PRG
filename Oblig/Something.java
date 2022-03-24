@@ -186,6 +186,7 @@ public class Something extends Application { // Extends javafx application windo
     }
 
     private void writeBackup(){
+        String[] newBackup = viewSortBy("MNr");
         // Write backup to file
         // Show feedback of success
     }
@@ -198,7 +199,7 @@ public class Something extends Application { // Extends javafx application windo
 
     private static void makeDB(){
         editDB("DROP TABLE IF EXISTS Medlem;");
-        editDB("CREATE TABLE Medlem(KNr integer primary key, Fornavn varchar(50), Etternavn varchar(50), Adresse varchar(50), Tlf integer);");
+        editDB("CREATE TABLE Medlem(MNr integer primary key, Fornavn varchar(50), Etternavn varchar(50), Adresse varchar(50), Tlf integer);");
     }
 
     private static void editDB(String message){
@@ -231,12 +232,57 @@ public class Something extends Application { // Extends javafx application windo
     }
 
     private static void insertMember(Medlem member){
-
+        String valueBuilder = "";
+        valueBuilder += member.getMNr() + ",";
+        valueBuilder += "'" + member.getFornavn() + "',";
+        valueBuilder += "'" + member.getEtternavn() + "',";
+        valueBuilder += "'" + member.getAdresse() + "',";
+        valueBuilder += member.getTlf();
+        editDB("INSERT INTO Medlem values(" + valueBuilder + ");");
     }
 
     private String[] viewSortBy(String sortBy){
+        String[] members = new String[0];
+        String message = "SELECT * FROM Medlem ORDER BY " + sortBy + "ASC";
 
-        return new String[1];
+        Connection conn = null;
+        try{
+            conn = DriverManager.getConnection("jdbc:sqlite:" + DB_NAME);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(message);
+            rs.last();
+            members = new String[rs.getRow()];
+            rs.first();
+            
+            int i = 0;
+            while(rs.next()){
+                Medlem member = new Medlem();
+                member.setMNr(rs.getInt("MNr"));
+                member.setFornavn(rs.getString("Fornavn"));
+                member.setEtternavn(rs.getString("Etternavn"));
+                member.setAdresse(rs.getString("Adresse"));
+                member.setTlf(rs.getInt("Tlf"));
+
+                members[i] = member.toString();
+                i++;
+            }
+
+        }catch(Exception e){
+            out.println("Error with connection to db");
+            if(message != ""){
+                out.println("Message: " + message);
+            }
+            out.println(e.toString());
+        }finally{
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch(Exception e){
+                    out.println("Failed to close connection: " + e.toString());
+                }
+            }
+        }
+        return members;
     }
 
     private void exit(){
