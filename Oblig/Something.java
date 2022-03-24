@@ -11,6 +11,8 @@ import static java.lang.Integer.*;
 import static java.lang.Double.*;
 import static java.lang.Math.*;
 import java.util.*;
+import java.sql.*;
+import java.io.*;
 
 // JavaFX imports
 import javafx.application.Application;
@@ -116,6 +118,14 @@ public class Something extends Application { // Extends javafx application windo
     }
     
     public static void main(String[] args) {
+        File t = new File(DB_NAME);
+        if(!t.exists()){
+            out.println("Database doesn't exist, attempting to create...");
+            makeDB();
+            if(t.exists()){
+                out.println("Successfully created database!");
+            }
+        }
         launch(args);
     }
 
@@ -159,7 +169,7 @@ public class Something extends Application { // Extends javafx application windo
     }
 
     private static void makeButtonList(Stage stage, String title, Button[] options){
-        stage.setTitle("Medlemsregister");
+        stage.setTitle(title);
         stage.setResizable(false);
 
         GridPane grid = new GridPane();
@@ -186,8 +196,42 @@ public class Something extends Application { // Extends javafx application windo
         // Show feedback of success
     }
 
-    private void makeDB(){
-        out.println("Not implemented yet!");
+    private static void makeDB(){
+        editDB("DROP TABLE IF EXISTS Medlem;");
+        editDB("CREATE TABLE Medlem(KNr integer primary key, Fornavn varchar(50), Etternavn varchar(50), Adresse varchar(50), Tlf integer);");
+    }
+
+    private static void editDB(String message){
+        Connection conn = null;
+        try{
+            conn = DriverManager.getConnection("jdbc:sqlite:" + DB_NAME);
+            Statement stmt = conn.createStatement();
+            stmt.executeUpdate(message);
+        }catch(Exception e){
+            out.println("Error with connection to db");
+            if(message != ""){
+                out.println("Message: " + message);
+            }
+            out.println(e.toString());
+        }finally{
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch(Exception e){
+                    out.println("Failed to close connection: " + e.toString());
+                }
+            }
+        }
+    }
+
+    private static void editDB(String[] messages){
+        for(String message : messages){
+            editDB(message);
+        }
+    }
+
+    private static void insertMember(Medlem member){
+
     }
 
     private String[] viewSortBy(String sortBy){
