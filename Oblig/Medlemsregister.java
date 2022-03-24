@@ -58,7 +58,7 @@ import javafx.stage.Stage;
 // +  |- Avslutt
 
 
-public class Something extends Application { // Extends javafx application window
+public class Medlemsregister extends Application { // Extends javafx application window
     Stage mainWindow; // Contains first set of buttons
     Stage confirmationWindow; // Confirm yes/no if the user wants to continue
 
