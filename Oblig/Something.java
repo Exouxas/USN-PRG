@@ -217,11 +217,30 @@ public class Something extends Application { // Extends javafx application windo
 
     private void readBackup(){
         if(confirm("Er du sikker på at du vil overskrive databasen med ny backup?")){
-            
+            Scanner reader = null;
+            try{
+                reader = new Scanner(new File("register.txt"));
+                makeDB();
+                while(reader.hasNextLine()){
+                    insertMember(new Medlem(reader.nextLine()));
+                }
+
+
+                out.println("Successfully used backup.");
+            }catch(IOException e){
+                out.println("Failed to read backup file: " + e.toString());
+            }catch(Exception e){
+                out.println("Failed to use backup: " + e.toString());
+            }finally{
+                if(reader != null){
+                    try{
+                        reader.close();
+                    }catch(Exception e){
+                        out.println("Failed to close backup file: " + e.toString());
+                    }
+                }
+            }
         }
-        // Confirmation window
-        // Read backup and replace current data
-        // Show feedback of success
     }
 
     private static boolean confirm(String text){
@@ -275,16 +294,23 @@ public class Something extends Application { // Extends javafx application windo
 
     private String[] viewSortBy(String sortBy){
         String[] members = new String[0];
-        String message = "SELECT * FROM Medlem ORDER BY " + sortBy + "ASC";
+        String message = "SELECT * FROM Medlem ORDER BY " + sortBy + " ASC";
 
         Connection conn = null;
         try{
             conn = DriverManager.getConnection("jdbc:sqlite:" + DB_NAME);
             Statement stmt = conn.createStatement();
+
+            // Count results
             ResultSet rs = stmt.executeQuery(message);
-            rs.last();
-            members = new String[rs.getRow()];
-            rs.first();
+            int counter = 0;
+            while(rs.next()){
+                counter++;
+            }
+            members = new String[counter];
+            
+            // Re-do query to get back to the top
+            rs = stmt.executeQuery(message);
             
             int i = 0;
             while(rs.next()){
