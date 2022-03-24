@@ -60,7 +60,6 @@ import javafx.stage.Stage;
 
 public class Medlemsregister extends Application { // Extends javafx application window
     Stage mainWindow; // Contains first set of buttons
-    Stage confirmationWindow; // Confirm yes/no if the user wants to continue
 
     Stage adminWindow; // Used to add/remove members and change phone numbers
     Stage addMemberWindow; // Used to add a new member
@@ -69,10 +68,12 @@ public class Medlemsregister extends Application { // Extends javafx application
 
     Stage viewMembersWindow; // Used to select how to sort members before displaying
     Stage sqlResultWindow; // Result of member sorting
+    ListView resultList;
 
     Stage activeWindow; // Currently visible window
 
     private static final double BUTTON_HEIGHT = 30;
+    private static final double ELEMENT_WIDTH = 280;
     private static final String DB_NAME = "medlemmer.db";
 
     public void start(Stage window) { // Using this to set up all windows, and display the main window.
@@ -81,37 +82,61 @@ public class Medlemsregister extends Application { // Extends javafx application
 
 
         mainWindow = window;
-        confirmationWindow = new Stage();
         adminWindow = new Stage();
         viewMembersWindow = new Stage();
         sqlResultWindow = new Stage();
 
         // Main window
         Button[] mainButtons = new Button[5];
-        mainButtons[0] = makeMenuButton("Administrer medlemmer", 280, e -> openWindow(adminWindow)); // To admin window
-        mainButtons[1] = makeMenuButton("Vis medlemmer", 280, e -> openWindow(viewMembersWindow));   // To overview window
-        mainButtons[2] = makeMenuButton("Ta backup", 280, e -> writeBackup());                       // Make backup
-        mainButtons[3] = makeMenuButton("Hent backup", 280, e -> readBackup());                      // Use backup file
-        mainButtons[4] = makeMenuButton("Avslutt", 280, e -> exit());                                // Close program
-        makeButtonList(mainWindow, "Medlemsregister", mainButtons);                                  // Compose window
+        mainButtons[0] = makeMenuButton("Administrer medlemmer", ELEMENT_WIDTH, e -> openWindow(adminWindow)); // To admin window
+        mainButtons[1] = makeMenuButton("Vis medlemmer", ELEMENT_WIDTH, e -> openWindow(viewMembersWindow));   // To overview window
+        mainButtons[2] = makeMenuButton("Ta backup", ELEMENT_WIDTH, e -> writeBackup());                       // Make backup
+        mainButtons[3] = makeMenuButton("Hent backup", ELEMENT_WIDTH, e -> readBackup());                      // Use backup file
+        mainButtons[4] = makeMenuButton("Avslutt", ELEMENT_WIDTH, e -> exit());                                // Close program
+        makeButtonList(mainWindow, "Medlemsregister", mainButtons);                                            // Compose window
 
         // Administration window
         Button[] adminButtons = new Button[4];
-        adminButtons[0] = makeMenuButton("Legg til medlem", 280, e -> openWindow(addMemberWindow));        // To add member window
-        adminButtons[1] = makeMenuButton("Slett medlem", 280, e -> openWindow(removeMemberWindow));        // To remove member window
-        adminButtons[2] = makeMenuButton("Endre telefonnummer", 280, e -> openWindow(modifyNumberWindow)); // To modify phone number window                    
-        adminButtons[3] = makeMenuButton("Gå tilbake", 280, e -> openWindow(mainWindow));                  // Back to main window
-        makeButtonList(adminWindow, "Administrer medlemmer", adminButtons);                                // Compose window
+        adminButtons[0] = makeMenuButton("Legg til medlem", ELEMENT_WIDTH, e -> openWindow(addMemberWindow));        // To add member window
+        adminButtons[1] = makeMenuButton("Slett medlem", ELEMENT_WIDTH, e -> openWindow(removeMemberWindow));        // To remove member window
+        adminButtons[2] = makeMenuButton("Endre telefonnummer", ELEMENT_WIDTH, e -> openWindow(modifyNumberWindow)); // To modify phone number window                    
+        adminButtons[3] = makeMenuButton("Gå tilbake", ELEMENT_WIDTH, e -> openWindow(mainWindow));                  // Back to main window
+        makeButtonList(adminWindow, "Administrer medlemmer", adminButtons);                                          // Compose window
 
         // View members window
         Button[] sortButtons = new Button[4];
-        sortButtons[0] = makeMenuButton("Sorter etter fornavn", 280, e -> viewSortBy("Fornavn"));      // To admin window
-        sortButtons[1] = makeMenuButton("Sorter etter etternavn", 280, e -> viewSortBy("Etternavn"));  // To overview window
-        sortButtons[2] = makeMenuButton("Sorter etter telefonnummer", 280, e -> viewSortBy("TlfNr"));  // Make backup              
-        sortButtons[3] = makeMenuButton("Gå tilbake", 280, e -> openWindow(mainWindow));               // Back to main window
-        makeButtonList(viewMembersWindow, "Medlemsregister", sortButtons);                             // Compose window
+        sortButtons[0] = makeMenuButton("Sorter etter fornavn", ELEMENT_WIDTH, e -> resultWindow("Fornavn"));      // To admin window
+        sortButtons[1] = makeMenuButton("Sorter etter etternavn", ELEMENT_WIDTH, e -> resultWindow("Etternavn"));  // To overview window
+        sortButtons[2] = makeMenuButton("Sorter etter telefonnummer", ELEMENT_WIDTH, e -> resultWindow("Tlf"));  // Make backup              
+        sortButtons[3] = makeMenuButton("Gå tilbake", ELEMENT_WIDTH, e -> openWindow(mainWindow));               // Back to main window
+        makeButtonList(viewMembersWindow, "Medlemsregister", sortButtons);                                       // Compose window
+
+        // Add member window
 
 
+        // Remove member window
+
+
+        // Sort members window
+        sqlResultWindow.setTitle("title");
+        sqlResultWindow.setResizable(false);
+        
+        GridPane grid = new GridPane();
+        grid.setVgap(10); 
+        grid.setHgap(10);  
+        grid.setPadding(new Insets(10, 10, 10, 10)); 
+        resultList = new ListView();
+        resultList.setPrefWidth(ELEMENT_WIDTH);
+        resultList.setMaxWidth(ELEMENT_WIDTH);
+        resultList.setMinWidth(ELEMENT_WIDTH);
+        resultList.setPrefHeight(ELEMENT_WIDTH * 2);
+        resultList.setMaxHeight(ELEMENT_WIDTH * 2);
+        resultList.setMinHeight(ELEMENT_WIDTH * 2);
+        grid.add(resultList, 0, 0);
+        grid.add(makeMenuButton("Ferdig", ELEMENT_WIDTH, e -> openWindow(mainWindow)), 0, 1);
+
+        Scene scene = new Scene(grid, ELEMENT_WIDTH + 20, 10 + BUTTON_HEIGHT + 10 + ELEMENT_WIDTH * 2 + 10);
+        sqlResultWindow.setScene(scene);
 
         mainWindow.show();
         activeWindow = mainWindow;
@@ -181,7 +206,7 @@ public class Medlemsregister extends Application { // Extends javafx application
             grid.add(options[i], 0, i);
         }
 
-        Scene scene = new Scene(grid, 300, options.length * (BUTTON_HEIGHT + 10) + 10);
+        Scene scene = new Scene(grid, ELEMENT_WIDTH + 20, options.length * (BUTTON_HEIGHT + 10) + 10);
         stage.setScene(scene);
     }
 
@@ -202,6 +227,7 @@ public class Medlemsregister extends Application { // Extends javafx application
                 firstLineDone = true;
             }
             out.println("Successfully wrote backup file.");
+            showMessageDialog(null, "Backup er nå hentet ut. Database oppdatert.");
         }catch(Exception e){
             out.println("Failed to write backup: " + e.toString());
         }finally{
@@ -227,6 +253,7 @@ public class Medlemsregister extends Application { // Extends javafx application
 
 
                 out.println("Successfully used backup.");
+                showMessageDialog(null, "Backup er nå hentet ut. Database oppdatert.");
             }catch(IOException e){
                 out.println("Failed to read backup file: " + e.toString());
             }catch(Exception e){
@@ -294,7 +321,8 @@ public class Medlemsregister extends Application { // Extends javafx application
 
     private String[] viewSortBy(String sortBy){
         String[] members = new String[0];
-        String message = "SELECT * FROM Medlem ORDER BY " + sortBy + " ASC";
+        String message = "SELECT * FROM Medlem ORDER BY " + sortBy + " ASC;";
+        out.println(message);
 
         Connection conn = null;
         try{
@@ -320,9 +348,11 @@ public class Medlemsregister extends Application { // Extends javafx application
                 member.setEtternavn(rs.getString("Etternavn"));
                 member.setAdresse(rs.getString("Adresse"));
                 member.setTlf(rs.getInt("Tlf"));
-
-                members[i] = member.toString();
-                i++;
+                
+                if(sortBy != "Tlf" | member.getTlf() > 0){
+                    members[i] = member.toString();
+                    i++;
+                }
             }
 
         }catch(Exception e){
@@ -341,6 +371,17 @@ public class Medlemsregister extends Application { // Extends javafx application
             }
         }
         return members;
+    }
+
+    private void resultWindow(String sortBy){
+        sqlResultWindow.setTitle("Sortert: " + sortBy);
+        openWindow(sqlResultWindow);
+
+        for(String line : viewSortBy(sortBy)){
+            if(line != null){
+                resultList.getItems().add(line);
+            }
+        }
     }
 
     private void exit(){
