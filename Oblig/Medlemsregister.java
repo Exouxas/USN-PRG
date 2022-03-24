@@ -40,22 +40,22 @@ import javafx.stage.Stage;
 // Elementer uten sub-elementer er funksjonelle
 
 // Full oversikt over vinduer:
-// + Main window
-// +  |- Administrer medlemmer
+//   Main window
+//    |- Administrer medlemmer
 //    |   |- Legg til              -|
 //    |   |- *Slett                 |- Disse 3 vil ha sine egne spesielle input dialoger
 //    |   |- Endre telefonnummer   -|
-// +  |   |- Gå tilbake
+//    |   |- Gå tilbake
 //    |
-// +  |- Vis medlemmer
-// +  |   |- Fornavn          -|
-// +  |   |- Etternavn         |- Disse 3 vil åpne et nytt vindu med resultatet
-// +  |   |- Telefonnummer    -|
-// +  |   |- Gå tilbake
+//    |- Vis medlemmer
+//    |   |- Fornavn          -|
+//    |   |- Etternavn         |- Disse 3 vil åpne et nytt vindu med resultatet
+//    |   |- Telefonnummer    -|
+//    |   |- Gå tilbake
 //    |
-// +  |- Ta backup        -|
-// +  |- *Hent backup     -|- Bekreftelse på at oppgaven er utført
-// +  |- Avslutt
+//    |- Ta backup        -|
+//    |- *Hent backup     -|- Bekreftelse på at oppgaven er utført
+//    |- Avslutt
 
 
 public class Medlemsregister extends Application { // Extends javafx application window
