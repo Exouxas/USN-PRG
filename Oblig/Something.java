@@ -189,10 +189,17 @@ public class Something extends Application { // Extends javafx application windo
         String[] newBackup = viewSortBy("MNr");
         File backupFile = new File("register.txt");
         FileWriter writer = null;
+
+        boolean firstLineDone = false;
         try{
             writer = new FileWriter(backupFile, false);
             for(String line : newBackup){
-                writer.println(line);
+                if(firstLineDone){
+                    writer.write("\n");
+                }
+                writer.write(line);
+
+                firstLineDone = true;
             }
             out.println("Successfully wrote backup file.");
         }catch(Exception e){
@@ -209,9 +216,17 @@ public class Something extends Application { // Extends javafx application windo
     }
 
     private void readBackup(){
+        if(confirm("Er du sikker på at du vil overskrive databasen med ny backup?")){
+            
+        }
         // Confirmation window
         // Read backup and replace current data
         // Show feedback of success
+    }
+
+    private static boolean confirm(String text){
+        int result = showConfirmDialog(null, text);
+        return result == YES_OPTION;
     }
 
     private static void makeDB(){
