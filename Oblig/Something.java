@@ -187,8 +187,25 @@ public class Something extends Application { // Extends javafx application windo
 
     private void writeBackup(){
         String[] newBackup = viewSortBy("MNr");
-        // Write backup to file
-        // Show feedback of success
+        File backupFile = new File("register.txt");
+        FileWriter writer = null;
+        try{
+            writer = new FileWriter(backupFile, false);
+            for(String line : newBackup){
+                writer.println(line);
+            }
+            out.println("Successfully wrote backup file.");
+        }catch(Exception e){
+            out.println("Failed to write backup: " + e.toString());
+        }finally{
+            if(writer != null){
+                try{
+                    writer.close();
+                }catch(Exception e){
+                    out.println("Failed to close writer: " + e.toString());
+                }
+            }
+        }
     }
 
     private void readBackup(){
