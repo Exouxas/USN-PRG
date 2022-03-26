@@ -317,6 +317,7 @@ public class Medlemsregister extends Application { // Extends javafx application
         if(newMember.isValid()){
             insertMember(newMember);
             showMessageDialog(null, "Medlem lagt til!");
+            out.println("Member added.");
             openWindow(mainWindow);
         }else{
             showMessageDialog(null, "Vennligst fyll mer informasjon.");
@@ -335,6 +336,7 @@ public class Medlemsregister extends Application { // Extends javafx application
         if(memberExists(memberNumber)){
             editDB("DELETE FROM Medlem WHERE MNr = " + memberNumber);
             showMessageDialog(null, "Medlem nr " + memberNumber + " er nå tatt bort.");
+            out.println("Member removed.");
             openWindow(mainWindow);
         }else{
             showMessageDialog(null, "Finner ikke medlem nr " + memberNumber);
@@ -355,6 +357,7 @@ public class Medlemsregister extends Application { // Extends javafx application
         if(memberExists(memberNumber) & phoneNumber > 0){
             editDB("UPDATE Medlem SET Tlf = " + phoneNumber + " WHERE MNr = " + memberNumber + ";");
             showMessageDialog(null, "Telefonnummer endret.");
+            out.println("Phone number changed.");
             openWindow(mainWindow);
         }else{
             showMessageDialog(null, "Velligst fyll inn på nytt.");
@@ -409,7 +412,8 @@ public class Medlemsregister extends Application { // Extends javafx application
                 firstLineDone = true;
             }
             out.println("Successfully wrote backup file.");
-            showMessageDialog(null, "Backup er nå hentet ut. Database oppdatert.");
+            showMessageDialog(null, "Backup er nå skrevet.");
+            out.println("Backup written.");
         }catch(Exception e){
             out.println("Failed to write backup: " + e.toString());
         }finally{
@@ -469,6 +473,7 @@ public class Medlemsregister extends Application { // Extends javafx application
 
                 out.println("Successfully used backup.");
                 showMessageDialog(null, "Backup er nå hentet ut. Database oppdatert.");
+                out.println("Backup used.");
             }catch(IOException e){
                 out.println("Failed to read backup file: " + e.toString());
             }catch(Exception e){
@@ -596,6 +601,7 @@ public class Medlemsregister extends Application { // Extends javafx application
                 resultList.getItems().add(line);
             }
         }
+        out.println("Members sorted and displayed.");
     }
 
     private void exit(){
