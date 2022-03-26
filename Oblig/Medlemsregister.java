@@ -63,8 +63,17 @@ public class Medlemsregister extends Application { // Extends javafx application
 
     Stage adminWindow; // Used to add/remove members and change phone numbers
     Stage addMemberWindow; // Used to add a new member
+
+    TextField firstnameInput;
+    TextField lastnameInput;
+    TextField addressInput;
+    TextField phoneNumberInput;
+
     Stage removeMemberWindow; // Used to remove a selected member
+    TextField memberNumberInput;
     Stage modifyNumberWindow; // Used to modify the phone number of a member
+    TextField memberNumberInput2;
+    TextField phoneNumberInput2;
 
     Stage viewMembersWindow; // Used to select how to sort members before displaying
     Stage sqlResultWindow; // Result of member sorting
@@ -77,10 +86,6 @@ public class Medlemsregister extends Application { // Extends javafx application
     private static final String DB_NAME = "medlemmer.db";
 
     public void start(Stage window) { // Using this to set up all windows, and display the main window.
-        // Check if database exists, and create if it doesn't. Read from file if db doesn't exist, but leave empty if file doesn't exist
-
-
-
         mainWindow = window;
         adminWindow = new Stage();
         viewMembersWindow = new Stage();
@@ -112,13 +117,98 @@ public class Medlemsregister extends Application { // Extends javafx application
         makeButtonList(viewMembersWindow, "Medlemsregister", sortButtons);                                       // Compose window
 
         // Add member window
+        addMemberWindow = new Stage();
+        addMemberWindow.setTitle("Legg til");
+        addMemberWindow.setResizable(false);
+        GridPane addMemberGrid = new GridPane();
+        addMemberGrid.setVgap(10); 
+        addMemberGrid.setHgap(10);  
+        addMemberGrid.setPadding(new Insets(10, 10, 10, 10)); 
 
+        Label firstnameLabel = new Label("Fornavn:");
+        addMemberGrid.add(firstnameLabel, 0, 0);
+
+        firstnameInput = new TextField();
+        addMemberGrid.add(firstnameInput, 1, 0);
+
+        Label lastnameLabel = new Label("Etternavn:");
+        addMemberGrid.add(lastnameLabel, 0, 1);
+
+        lastnameInput = new TextField();
+        addMemberGrid.add(lastnameInput, 1, 1);
+
+        Label addressLabel = new Label("Adresse:");
+        addMemberGrid.add(addressLabel, 0, 2);
+
+        addressInput = new TextField();
+        addMemberGrid.add(addressInput, 1, 2);
+
+        Label phoneNumberLabel = new Label("Tlf:");
+        addMemberGrid.add(phoneNumberLabel, 0, 3);
+
+        phoneNumberInput = new TextField();
+        addMemberGrid.add(phoneNumberInput, 1, 3);
+
+        Button addMemberButton = makeMenuButton("Legg til", 220, e -> addMember()); 
+        addMemberGrid.add(addMemberButton, 0, 4, 2, 1);
+
+        Scene addMemberScene = new Scene(addMemberGrid, 240, 190);
+        addMemberWindow.setScene(addMemberScene);
+
+        
 
         // Remove member window
+        removeMemberWindow = new Stage();
+        removeMemberWindow.setTitle("Legg til");
+        removeMemberWindow.setResizable(false);
+        GridPane removeMemberGrid = new GridPane();
+        removeMemberGrid.setVgap(10); 
+        removeMemberGrid.setHgap(10);  
+        removeMemberGrid.setPadding(new Insets(10, 10, 10, 10)); 
+
+        Label memberNumberLabel = new Label("Medlemsnummer");
+        removeMemberGrid.add(memberNumberLabel, 0, 0);
+
+        memberNumberInput = new TextField();
+        removeMemberGrid.add(memberNumberInput, 1, 0);
+
+        Button removeMemberButton = makeMenuButton("Ta bort", 220, e -> removeMember()); 
+        removeMemberGrid.add(removeMemberButton, 0, 1, 2, 1);
+
+        Scene removeMemberScene = new Scene(removeMemberGrid, 240, 80);
+        removeMemberWindow.setScene(removeMemberScene);
+
+
+        // Modify phone number window
+        modifyNumberWindow = new Stage();
+        modifyNumberWindow.setTitle("Legg til");
+        modifyNumberWindow.setResizable(false);
+        GridPane modifyNumberGrid = new GridPane();
+        modifyNumberGrid.setVgap(10); 
+        modifyNumberGrid.setHgap(10);  
+        modifyNumberGrid.setPadding(new Insets(10, 10, 10, 10)); 
+
+        Label memberNumberLabel2 = new Label("Medlemsnummer");
+        modifyNumberGrid.add(memberNumberLabel2, 0, 0);
+
+        memberNumberInput2 = new TextField();
+        modifyNumberGrid.add(memberNumberInput2, 1, 0);
+
+        Label memberPhoneNumberLabel = new Label("Telefonnummer");
+        modifyNumberGrid.add(memberPhoneNumberLabel, 0, 1);
+
+        phoneNumberInput2 = new TextField();
+        modifyNumberGrid.add(phoneNumberInput2, 1, 1);
+
+        Button modifyNumberButton = makeMenuButton("Endre tlf", 220, e -> modifyNumber()); 
+        modifyNumberGrid.add(modifyNumberButton, 0, 2, 2, 1);
+
+        Scene modifyNumberScene = new Scene(modifyNumberGrid, 240, 120);
+        modifyNumberWindow.setScene(modifyNumberScene);
+
 
 
         // Sort members window
-        sqlResultWindow.setTitle("title");
         sqlResultWindow.setResizable(false);
         
         GridPane grid = new GridPane();
@@ -143,6 +233,7 @@ public class Medlemsregister extends Application { // Extends javafx application
     }
     
     public static void main(String[] args) {
+        // Check if database exists, and create if it doesn't.
         File t = new File(DB_NAME);
         if(!t.exists()){
             out.println("Database doesn't exist, attempting to create...");
@@ -210,6 +301,97 @@ public class Medlemsregister extends Application { // Extends javafx application
         stage.setScene(scene);
     }
 
+    private void addMember(){
+        Medlem newMember = new Medlem();
+        newMember.setFornavn(firstnameInput.getText());
+        newMember.setEtternavn(lastnameInput.getText());
+        newMember.setAdresse(addressInput.getText());
+        try{
+            newMember.setTlf(Integer.parseInt(phoneNumberInput.getText()));
+        }catch(Exception e){
+            out.println("Failed to read phone number: " + e.toString());
+        }
+
+        newMember.setMNr(getLastMember() + 1);
+
+        if(newMember.isValid()){
+            insertMember(newMember);
+            showMessageDialog(null, "Medlem lagt til!");
+            openWindow(mainWindow);
+        }else{
+            showMessageDialog(null, "Vennligst fyll mer informasjon.");
+        }
+    }
+
+    private void removeMember(){
+        int memberNumber = -1;
+
+        try{
+            memberNumber = Integer.parseInt(memberNumberInput.getText());
+        }catch(NumberFormatException e){
+            out.println("Failed to read member number");
+        }
+
+        if(memberExists(memberNumber)){
+            editDB("DELETE FROM Medlem WHERE MNr = " + memberNumber);
+            showMessageDialog(null, "Medlem nr " + memberNumber + " er nå tatt bort.");
+            openWindow(mainWindow);
+        }else{
+            showMessageDialog(null, "Finner ikke medlem nr " + memberNumber);
+        }
+    }
+
+    private void modifyNumber(){
+        int memberNumber = -1;
+        int phoneNumber = -1;
+
+        try{
+            memberNumber = Integer.parseInt(memberNumberInput2.getText());
+            phoneNumber = Integer.parseInt(phoneNumberInput2.getText());
+        }catch(NumberFormatException e){
+            out.println("Failed to read number");
+        }
+
+        if(memberExists(memberNumber) & phoneNumber > 0){
+            editDB("UPDATE Medlem SET Tlf = " + phoneNumber + " WHERE MNr = " + memberNumber + ";");
+            showMessageDialog(null, "Telefonnummer endret.");
+            openWindow(mainWindow);
+        }else{
+            showMessageDialog(null, "Velligst fyll inn på nytt.");
+        }
+    }
+
+    private boolean memberExists(int memberNumber){
+        Connection conn = null;
+        String message = "";
+        boolean memberExists = false;
+
+        try{
+            conn = DriverManager.getConnection("jdbc:sqlite:" + DB_NAME);
+            Statement stmt = conn.createStatement();
+
+            message = "SELECT MNr FROM Medlem WHERE MNr = " + memberNumber + ";";
+            ResultSet rs = stmt.executeQuery(message);
+            memberExists = rs.next();
+        }catch(Exception e){
+            out.println("Error with connection to db");
+            if(message != ""){
+                out.println("Message: " + message);
+            }
+            out.println(e.toString());
+        }finally{
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch(Exception e){
+                    out.println("Failed to close connection: " + e.toString());
+                }
+            }
+        }
+
+        return memberExists;
+    }
+
     private void writeBackup(){
         String[] newBackup = viewSortBy("MNr");
         File backupFile = new File("register.txt");
@@ -239,6 +421,39 @@ public class Medlemsregister extends Application { // Extends javafx application
                 }
             }
         }
+    }
+
+    private int getLastMember(){
+        Connection conn = null;
+        String message = "";
+        int result = 0;
+
+        try{
+            conn = DriverManager.getConnection("jdbc:sqlite:" + DB_NAME);
+            Statement stmt = conn.createStatement();
+
+            message = "SELECT MNr FROM Medlem ORDER BY MNr DESC;";
+            ResultSet rs = stmt.executeQuery(message);
+            rs.next();
+            result = rs.getInt("MNr");
+            
+        }catch(Exception e){
+            out.println("Error with connection to db");
+            if(message != ""){
+                out.println("Message: " + message);
+            }
+            out.println(e.toString());
+        }finally{
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch(Exception e){
+                    out.println("Failed to close connection: " + e.toString());
+                }
+            }
+        }
+
+        return result;
     }
 
     private void readBackup(){
@@ -322,7 +537,6 @@ public class Medlemsregister extends Application { // Extends javafx application
     private String[] viewSortBy(String sortBy){
         String[] members = new String[0];
         String message = "SELECT * FROM Medlem ORDER BY " + sortBy + " ASC;";
-        out.println(message);
 
         Connection conn = null;
         try{

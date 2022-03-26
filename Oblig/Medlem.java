@@ -85,4 +85,8 @@ public class Medlem {
         }
         return returnValue;
     }
+
+    public boolean isValid(){
+        return fornavn != "" & etternavn != "" & adresse != "";
+    }
 }
