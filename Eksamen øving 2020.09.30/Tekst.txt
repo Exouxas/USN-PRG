@@ -1,0 +1,64 @@
+// Oppgave 1b:
+
+String utData = "";
+for(int i = 0; i < romregister.length; i++){
+    if(romregister[i].kanHaDatautstyr && romregister[i].plasser >= 30){
+        utData += romregister[i].toString();
+        utData += "\n";
+    }
+}
+
+showMessageDialog(null, utData);
+
+
+
+// Oppgave 2:
+public static Rom[] lesRomFil(String filBane){
+    Scanner leser = null;
+    Rom[] romTabell = null;
+
+    try{
+        leser = new Scanner(new File(filBane));
+        int antallLinjer = 0;
+        while(leser.hasNextLine()){
+            antallLinjer++;
+            leser.nextLine();
+        }
+        leser.close();
+
+        romTabell = new Rom[antallLinjer];
+        leser = new Scanner(new File(filBane));
+        for(int i = 0; i < antallLinjer; i++){
+            String[] dataTab = leser.nextLine().split(";");
+            String type = dataTab[0];
+            String romNummer = dataTab[1];
+            int plasser = Integer.parseInt(dataTab[2]);
+            boolean kanHaDatautstyr = (dataTab[3] == "1");
+
+            romTabell[i] = new Rom(type, romNummer, plasser, kanHaDatautstyr);
+        }
+        leser.close();
+
+    }
+    catch(FileNotFoundException e){
+        out.println("Filen '" + filBane + "' ikke funnet!");
+    }
+    catch(NumberFormatException e){
+        out.println("Feil format på fil!");
+    }
+    catch(Exception e){
+        out.println("Lesing av fil feilet!");
+    }
+    finally{
+        if(leser != null){
+            try{
+                leser.close();
+            }catch(Exception e){
+                out.println("Klarte ikke å lukke filen!");
+            }
+        }
+    }
+
+
+    return romTabell;
+}
