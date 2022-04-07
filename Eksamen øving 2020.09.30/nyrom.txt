@@ -1,0 +1,12 @@
+Auditorium;5-115;9500
+Auditorium;5-116;96
+Auditorium;5-117;97
+Lab;1-115;95
+Lab;1-116;96
+Lab;1-117;97
+Seminarrom;2-117;97
+Seminarrom;2-118;98
+Seminarrom;2-119;99
+Seminarrom;2-120;100
+Grupperom;4-120;100
+Grupperom;4-121;101
