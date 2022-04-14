@@ -1,0 +1,78 @@
+// Oppgave 1b:
+String ut = "";
+
+for(int i = 0; i < postliste.length; i++){
+    if(postliste[i].poeng == 30){
+        ut += postliste[i].toString() + "\n";
+    }
+}
+
+for(int i = 0; i < postliste.length; i++){
+    if(postliste[i].poeng == 50){
+        ut += postliste[i].toString() + "\n";
+    }
+}
+
+showMessageDialog(null, ut);
+
+
+
+// Oppgave 2a:
+private static Turpost[] hentTurposter(String filnavn){
+    Turpost[] resultat = null;
+    Scanner leser = null;
+
+    try{
+        leser = new Scanner(new File(filnavn));
+
+        int antallLinjer = 0;
+        while(leser.hasNextLine()){
+            leser.nextLine();
+            antallLinjer++;
+        }
+        resultat = new Turpost[antallLinjer];
+
+        leser.close();
+        leser = new Scanner(new File(filnavn));
+
+        for(int i = 0; i < antallLinjer; i++){
+            String[] verdier = leser.getNextLine().split(";");
+
+            int id = Integer.parseInt(verdier[0]);
+            String navn = verdier[1];
+            int poeng = Integer.parseInt(verdier[2]);
+            int besøk = Integer.parseInt(verdier[3]);
+
+            resultat[i] = new Turpost(id, navn, poeng, besøk);
+        }
+        
+        leser.close(); // Må ikke ha denne, men legger den til i tilfelle ekspandering
+    }catch(FileNotFoundException e){
+        out.println("Klarte ikke å finne fil '" + filnavn + "' " + e.toString());
+    }catch(Exception e){
+        out.println("Noe galt med fil '" + filnavn + "' " + e.toString());
+    }finally{
+        if(leser != null){
+            try{
+                leser.close();
+            }catch(Exception e){
+                out.println("Klarte ikke å lukke fil '" + filnavn + "' " + e.toString());
+            }
+        }
+    }
+
+    return resultat;
+}
+
+
+// Oppgave 2b:
+private static int tellBesøk(Turpost[] tabell){
+    int sum = 0;
+    for(int i = 0; i < tabell.length; i++){
+        sum += tabell[i].besøk;
+    }
+
+    return sum;
+}
+
+
