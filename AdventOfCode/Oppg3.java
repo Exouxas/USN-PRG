@@ -48,6 +48,27 @@ public class Oppg3 {
 
             out.println("Closest part1: " + closest);
 
+
+            int closest2 = -1;
+
+            for(int i1 = 0; i1 < lines1.length; i1++){
+                for(int i2 = 0; i2 < lines2.length; i2++){
+                    int cross = lines1[i1].cross(lines2[i2]);
+                    if(cross >= 1){
+                        int distance = getSignalDelay(lines1, lines2, dir1, dir2, i1, i2);
+                        if(closest2 == -1){
+                            closest2 = distance;
+                        }else{
+                            if(distance < closest2){
+                                closest2 = distance;
+                            }
+                        }
+                    }
+                }
+            }
+
+            out.println("Closest part2: " + closest2);
+
         }catch(Exception e){
             out.println("General failure: " + e.toString());
         }finally{
@@ -59,6 +80,37 @@ public class Oppg3 {
                 }
             }
         }
+    }
+
+    public static int getSignalDelay(Line[] l1, Line[] l2, Direction[] d1, Direction[] d2, int i1, int i2){
+        int sum = 0;
+
+        for(int i = 0 ; i < i1; i++){
+            sum += d1[i].length;
+        }
+        for(int i = 0 ; i < i2; i++){
+            sum += d2[i].length;
+        }
+
+
+        int cx = 0;
+        int cy = 0;
+
+        if(l1[i1].x1 == l1[i1].x2){
+            cx = l1[i1].x1;
+            cy = l2[i2].y1;
+        }else{
+            cx = l2[i2].x1;
+            cy = l1[i1].y1;
+        }
+
+        sum += Math.abs(l1[i1].x1 - cx);
+        sum += Math.abs(l1[i1].y1 - cy);
+        sum += Math.abs(l2[i2].x1 - cx);
+        sum += Math.abs(l2[i2].y1 - cy);
+
+
+        return sum;
     }
 
     public static Direction[] getDirections(String s){
